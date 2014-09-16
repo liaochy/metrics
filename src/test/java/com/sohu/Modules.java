@@ -13,10 +13,10 @@ public class Modules {
 		Random random = new Random(10);
 		while (true) {
 			for (int i = 0; i < 4; i++) {
-				RestMetrics.addStatusCount("/url/" + i, 300 + random.nextInt(4),
-						random.nextInt(1000));
+				RestMetrics.addStatusCount("usedadade", 200,
+						1000);
 			}
-			Thread.currentThread().sleep(100);
+			Thread.currentThread().sleep(2);
 
 		}
 	}

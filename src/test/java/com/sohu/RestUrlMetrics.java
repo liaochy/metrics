@@ -1,8 +1,5 @@
 package com.sohu;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.metrics2.annotation.Metric;
@@ -10,43 +7,31 @@ import org.apache.hadoop.metrics2.annotation.Metrics;
 import org.apache.hadoop.metrics2.lib.DefaultMetricsSystem;
 import org.apache.hadoop.metrics2.lib.MutableRates;
 
-@Metrics(about = "Jersey REST  for one url", context = "url")
+@Metrics(about = "Jersey REST  for one url", context = "jersey", name = "url")
 public class RestUrlMetrics {
-	private static final Map<String, RestUrlMetrics> urls = new ConcurrentHashMap<String, RestUrlMetrics>();
-	private static final ConcurrentHashMap<String, String> urlLock = new ConcurrentHashMap<String, String>();
 
 	static final Log LOG = LogFactory.getLog(RestUrlMetrics.class);
-	private final String url;
+	private static RestUrlMetrics urlMetrics;
 
-	RestUrlMetrics(String url) {
-		this.url = url;
+	private RestUrlMetrics() {
 	}
 
-	public static RestUrlMetrics create(String url) {
-		RestUrlMetrics source = null;
-		urlLock.putIfAbsent(url, url);
-		synchronized (urlLock.get(url)) {
-			source = urls.get(url);
-			if (source == null) {
-				RestUrlMetrics m = new RestUrlMetrics(url);
-				RestUrlMetrics metrics = DefaultMetricsSystem.instance()
-						.register(m.url, null, m);
-				urls.put(url, metrics);
+	public static RestUrlMetrics create() {
+		synchronized (RestTotalMetrics.class) {
+			if (urlMetrics == null) {
+				RestUrlMetrics metrics = new RestUrlMetrics();
+				urlMetrics = DefaultMetricsSystem.instance().register(
+						"url", null, metrics);
 			}
 		}
-		return urls.get(url);
+		return urlMetrics;
 	}
 
-	@Metric(sampleName = "count")
+	@Metric("process time")
 	MutableRates rates;
 
-	public void init(Class<?> protocol) {
-		rates.init(protocol);
-	}
-
-	public void addStatusCount(Integer status, int processTime) {
-		rates.add(url+"_"+String.valueOf(status), processTime);
-		rates.add("all", processTime);
+	public void addProcessTime(String url, int processTime) {
+		rates.add(url, processTime);
 	}
 
 }

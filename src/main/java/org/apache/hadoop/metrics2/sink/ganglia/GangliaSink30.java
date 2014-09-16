@@ -110,18 +110,18 @@ public class GangliaSink30 extends AbstractGangliaSink {
     // The method handles both cases whether Ganglia support dense publish
     // of metrics of sparse (only on change) publish of metrics
     try {
-//      String recordName = record.name();
+      String recordName = record.name();
       String contextName = record.context();
 
       StringBuilder sb = new StringBuilder();
       sb.append(contextName);
       sb.append('.');
-//      sb.append(recordName);
+      sb.append(recordName);
 
       appendPrefix(record, sb);
       
       String groupName = sb.toString();
-//      sb.append('.');
+      sb.append('.');
       int sbBaseLen = sb.length();
 
       String type = null;

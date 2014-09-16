@@ -7,7 +7,7 @@ import org.apache.hadoop.metrics2.annotation.Metrics;
 import org.apache.hadoop.metrics2.lib.DefaultMetricsSystem;
 import org.apache.hadoop.metrics2.lib.MutableRates;
 
-@Metrics(about = "Jersey REST connection metrics", context = "total")
+@Metrics(about = "Jersey REST connection metrics", context = "jersey",name="total")
 public class RestTotalMetrics {
 
 	static final Log LOG = LogFactory.getLog(RestTotalMetrics.class);
